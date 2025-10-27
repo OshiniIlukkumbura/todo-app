@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="1761330903854" clover="3.2.0">
+  <project timestamp="1761330903855" name="All files">
+    <metrics statements="25" coveredstatements="25" conditionals="12" coveredconditionals="12" methods="9" coveredmethods="9" elements="46" coveredelements="46" complexity="0" loc="25" ncloc="25" packages="1" files="3" classes="3"/>
+    <file name="AddTaskForm.tsx" path="D:\Self projects\Todo Application\frontend\src\components\AddTaskForm.tsx">
+      <metrics statements="18" coveredstatements="18" conditionals="8" coveredconditionals="8" methods="5" coveredmethods="5"/>
+      <line num="7" count="1" type="stmt"/>
+      <line num="9" count="7" type="stmt"/>
+      <line num="10" count="7" type="stmt"/>
+      <line num="11" count="7" type="stmt"/>
+      <line num="13" count="7" type="stmt"/>
+      <line num="14" count="2" type="cond" truecount="2" falsecount="0"/>
+      <line num="15" count="1" type="stmt"/>
+      <line num="16" count="1" type="stmt"/>
+      <line num="18" count="1" type="stmt"/>
+      <line num="22" count="1" type="stmt"/>
+      <line num="23" count="1" type="stmt"/>
+      <line num="27" count="7" type="stmt"/>
+      <line num="28" count="1" type="stmt"/>
+      <line num="29" count="1" type="stmt"/>
+      <line num="30" count="1" type="stmt"/>
+      <line num="33" count="7" type="stmt"/>
+      <line num="46" count="1" type="stmt"/>
+      <line num="62" count="1" type="stmt"/>
+    </file>
+    <file name="TaskItem.tsx" path="D:\Self projects\Todo Application\frontend\src\components\TaskItem.tsx">
+      <metrics statements="4" coveredstatements="4" conditionals="2" coveredconditionals="2" methods="2" coveredmethods="2"/>
+      <line num="5" count="2" type="stmt"/>
+      <line num="12" count="4" type="stmt"/>
+      <line num="50" count="1" type="stmt"/>
+      <line num="51" count="1" type="stmt"/>
+    </file>
+    <file name="TaskList.tsx" path="D:\Self projects\Todo Application\frontend\src\components\TaskList.tsx">
+      <metrics statements="3" coveredstatements="3" conditionals="2" coveredconditionals="2" methods="2" coveredmethods="2"/>
+      <line num="6" count="1" type="stmt"/>
+      <line num="7" count="2" type="stmt"/>
+      <line num="11" count="2" type="stmt"/>
+    </file>
+  </project>
+</coverage>

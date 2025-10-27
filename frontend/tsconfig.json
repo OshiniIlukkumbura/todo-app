@@ -1,0 +1,13 @@
+{
+  "files": [],
+  "references": [
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.node.json" }
+  ],
+  "compilerOptions": {
+    "isolatedModules": false,
+    "types": ["vitest/globals", "vite/client"],
+    "moduleResolution": "node",
+    "target": "ESNext"
+  }
+}
