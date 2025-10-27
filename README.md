@@ -4,7 +4,7 @@ A simple Dockerized Todo Task Web Application that allows users to add tasks, ma
 
 ## Tech Stack
 
-- **Frontend:** React, TypeScript, MUI, React Router. Jest
+- **Frontend:** React, TypeScript, MUI, React Router, Jest
 - **Backend:** Spring Boot 3, Java 17, REST API with JWT Authentication, JUnit 5, Mockito
 - **Database:** MySQL 8
 - **Containerization:** Docker, Docker Compose
