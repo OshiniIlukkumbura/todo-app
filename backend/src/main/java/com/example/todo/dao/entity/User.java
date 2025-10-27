@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Table(name = "user")
 @Data
@@ -23,7 +25,7 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    // store refresh token to validate it
-    @Column(name = "refresh_token", length = 2000)
-    private String refreshToken;
+    // One user can have many tasks
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Task> tasks;
 }

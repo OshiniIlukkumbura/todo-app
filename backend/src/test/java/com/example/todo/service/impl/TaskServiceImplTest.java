@@ -5,8 +5,10 @@ import com.example.todo.dao.dto.request.TaskCreateRequest;
 import com.example.todo.dao.dto.response.AppResponse;
 import com.example.todo.dao.dto.response.TaskResponse;
 import com.example.todo.dao.entity.Task;
+import com.example.todo.dao.entity.User;
 import com.example.todo.dao.enums.EApiStatus;
 import com.example.todo.dao.repository.TaskRepository;
+import com.example.todo.dao.repository.UserRepository;
 import com.example.todo.exception.TaskNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,6 +18,9 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collections;
 import java.util.List;
@@ -31,13 +36,37 @@ class TaskServiceImplTest {
     @Mock
     private TaskRepository taskRepository;
 
+    // create a mock version of UserRepository.
+    @Mock
+    private UserRepository userRepository;
+
     // create an instance of TaskServiceImpl and injects the mocked TaskRepository into it.
     @InjectMocks
     private TaskServiceImpl taskService;
 
+    private User mockUser;
+
     @BeforeEach     // runs before every test method.
     void setUp() {
         MockitoAnnotations.openMocks(this);      // initializes the mock objects
+
+        // Create a mock logged-in user
+        mockUser = new User();
+        mockUser.setId(1L);
+        mockUser.setUsername("testuser");
+
+        // Mock SecurityContext to provide the logged-in user
+        UserDetails userDetails = org.springframework.security.core.userdetails.User
+                .withUsername(mockUser.getUsername())
+                .password("password")
+                .authorities(Collections.emptyList())
+                .build();
+        UsernamePasswordAuthenticationToken auth =
+                new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(auth);
+
+        // Mock userRepository to return the current user
+        when(userRepository.findByUsername(mockUser.getUsername())).thenReturn(Optional.of(mockUser));
     }
 
     @Test
@@ -55,7 +84,7 @@ class TaskServiceImplTest {
         Page<Task> page = new PageImpl<>(Collections.singletonList(task));
 
         // when this method called then return this result instead of executing any real logic
-        when(taskRepository.findIncompleteTasks(any(PageRequest.class))).thenReturn(page);
+        when(taskRepository.findIncompleteTasksByUser(eq(mockUser.getId()),any(PageRequest.class))).thenReturn(page);
 
         AppResponse<List<TaskResponse>> response = taskService.getIncompleteTasks(pageNumber, pageSize);
 
@@ -67,7 +96,7 @@ class TaskServiceImplTest {
         assertEquals("Incomplete Todo Task", response.getData().get(0).getTitle());
         assertEquals(EApiStatus.SUCCESS.getStatus(), response.getMeta().getStatus());
         // to verify the repository was actually called correctly
-        verify(taskRepository, times(1)).findIncompleteTasks(any(PageRequest.class));
+        verify(taskRepository, times(1)).findIncompleteTasksByUser(eq(mockUser.getId()),any(PageRequest.class));
 
     }
 
@@ -77,13 +106,13 @@ class TaskServiceImplTest {
         int pageSize = 5;
 
         Page<Task> page = new PageImpl<>(Collections.emptyList());
-        when(taskRepository.findIncompleteTasks(any(PageRequest.class))).thenReturn(page);
+        when(taskRepository.findIncompleteTasksByUser(eq(mockUser.getId()),any(PageRequest.class))).thenReturn(page);
 
         AppResponse<List<TaskResponse>> response = taskService.getIncompleteTasks(pageNumber, pageSize);
         assertNotNull(response);
         assertEquals(EApiStatus.SUCCESS.getStatus(), response.getMeta().getStatus());
         assertTrue(response.getData().isEmpty());
-        verify(taskRepository).findIncompleteTasks(any(PageRequest.class));
+        verify(taskRepository).findIncompleteTasksByUser(eq(mockUser.getId()),any(PageRequest.class));
 
 
     }
@@ -96,6 +125,7 @@ class TaskServiceImplTest {
 
         Task taskEntity = TaskMapper.toEntity(request);
         taskEntity.setId(1L);
+        taskEntity.setUser(mockUser);
 
         when(taskRepository.save(any(Task.class))).thenReturn(taskEntity);
         AppResponse<TaskResponse> response = taskService.createTask(request);

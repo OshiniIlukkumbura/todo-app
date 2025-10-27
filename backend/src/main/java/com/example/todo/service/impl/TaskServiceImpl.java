@@ -6,12 +6,17 @@ import com.example.todo.dao.dto.request.TaskCreateRequest;
 import com.example.todo.dao.dto.response.TaskResponse;
 import com.example.todo.dao.dto.build.TaskMapper;
 import com.example.todo.dao.entity.Task;
+import com.example.todo.dao.entity.User;
 import com.example.todo.dao.repository.TaskRepository;
+import com.example.todo.dao.repository.UserRepository;
 import com.example.todo.exception.TaskNotFoundException;
 import com.example.todo.service.TaskService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,22 +24,36 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class TaskServiceImpl implements TaskService {
 
     private final TaskRepository taskRepository;
+    private final UserRepository userRepository;
 
-    public TaskServiceImpl(TaskRepository taskRepository) {
-        this.taskRepository = taskRepository;
+    private User getCurrentUser() {
+        log.debug("Get Current User called");
+        // get the authentication object stored in Spring Security's context for this request
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String username;
+        if (principal instanceof UserDetails) {
+            // Extract the username from UserDetails
+            username = ((UserDetails) principal).getUsername();
+        } else {
+            username = principal.toString();
+        }
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Logged-in user not found"));
     }
 
     @Override
     public AppResponse<List<TaskResponse>> getIncompleteTasks(int pageNumber, int pageSize) {
 
-        try{
+        try {
             log.debug("Get incomplete tasks called");
+            User currentUser = getCurrentUser();
             PageRequest pageable = PageRequest.of(pageNumber, pageSize);
-            Page<Task> taskPage = taskRepository.findIncompleteTasks(pageable);
-            log.debug("taskPage total count : {}",taskPage.getTotalElements());
+            Page<Task> taskPage = taskRepository.findIncompleteTasksByUser(currentUser.getId(), pageable);
+            log.debug("taskPage total count : {}", taskPage.getTotalElements());
             List<TaskResponse> responseList = taskPage.getContent()
                     .stream().map(TaskMapper::toResponse)
                     .collect(Collectors.toList());
@@ -56,10 +75,12 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public AppResponse<TaskResponse> createTask(TaskCreateRequest request) {
-        try{
+        try {
             log.debug("Create Task called");
             log.debug("Creating task: {}", request.getTitle());
+            User currentUser = getCurrentUser();
             Task task = TaskMapper.toEntity(request);
+            task.setUser(currentUser); // assign task to the logged in user
             Task saved = taskRepository.save(task);
             return AppResponse.success(TaskMapper.toResponse(saved), "Task created successfully");
         } catch (Exception ex) {
@@ -73,7 +94,7 @@ public class TaskServiceImpl implements TaskService {
     public AppResponse<TaskResponse> updateTaskStatus(Long taskId, short completed) {
         try {
             log.debug("Update Task Status called");
-            log.debug("Updating task: {} into completed status {}", taskId,completed);
+            log.debug("Updating task: {} into completed status {}", taskId, completed);
             Task task = taskRepository.findById(taskId)
                     .orElseThrow(() -> new TaskNotFoundException("Task with ID " + taskId + " not found"));
 
@@ -90,7 +111,6 @@ public class TaskServiceImpl implements TaskService {
             throw new RuntimeException("Failed to update task status", ex);
         }
     }
-
 
 
 }

@@ -30,7 +30,7 @@ const RegisterPage: React.FC = () => {
 
       const token = localStorage.getItem("accessToken");
       if (!token) {
-        toast.error("Registration failed: token missing");
+        toast.error("Registration failed!");
         return;
       }
 
@@ -38,7 +38,7 @@ const RegisterPage: React.FC = () => {
       navigate("/todo");
     } catch (error) {
       console.error(error);
-      toast.error("Registration failed. Try again.");
+      toast.error("Registration failed. Try again!");
     } finally {
       setLoading(false);
     }

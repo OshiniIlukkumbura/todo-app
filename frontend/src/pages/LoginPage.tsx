@@ -17,7 +17,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
 
   const handleLogin = async () => {
     if (!username || !password) {
-      toast.error("Please fill all fields");
+      toast.error("Please fill all fields!");
       return;
     }
 
@@ -29,7 +29,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
       if (!token) {
         console.log("!token");
 
-        toast.error("Login failed: token missing");
+        toast.error("Login failed!");
         return;
       }
 
@@ -40,7 +40,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
       navigate("/todo");
     } catch (error) {
       console.error("Login error:", error);
-      toast.error("Login failed. Please try again.");
+      toast.error("Login failed. Please try again!");
     } finally {
       setLoading(false);
     }

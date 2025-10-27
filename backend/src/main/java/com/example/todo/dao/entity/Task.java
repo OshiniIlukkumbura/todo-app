@@ -25,6 +25,10 @@ public class Task {
     @Column(nullable = false)
     private Short completed ;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
     @CreationTimestamp
     @Column(name = "created_at",nullable = false)
     private Date createdAt ;

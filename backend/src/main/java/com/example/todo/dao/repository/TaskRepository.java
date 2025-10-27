@@ -10,8 +10,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TaskRepository extends JpaRepository<Task, Long> {
 
-    @Query(value = "SELECT t.* FROM task AS t WHERE t.completed = '0' ORDER BY t.created_at DESC",
-            countQuery = "SELECT COUNT(*) FROM task AS t WHERE t.completed = '0'",
+    @Query(value = "SELECT t.* FROM task AS t WHERE t.completed = '0' AND t.user_id = :userId ORDER BY t.created_at DESC",
+            countQuery = "SELECT COUNT(*) FROM task AS t WHERE t.completed = '0' AND t.user_id = :userId",
             nativeQuery = true)
-    Page<Task> findIncompleteTasks(Pageable pageable);
+    Page<Task> findIncompleteTasksByUser(Long userId, Pageable pageable);
 }
