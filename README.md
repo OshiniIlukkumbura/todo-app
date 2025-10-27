@@ -33,8 +33,8 @@ A simple Dockerized Todo Task Web Application that allows users to add tasks, ma
 
 1. **Clone the repository**
 
-git clone <your-repo-url>
-cd todo-app
+git clone <repo_url>  
+cd todo-app  
 
 2. **Start the application using Docker Compose**
 
