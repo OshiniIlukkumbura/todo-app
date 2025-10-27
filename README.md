@@ -52,25 +52,25 @@ The backend waits for the database to be ready before starting.
 
 ## Docker Compose Overview
 
-db → MySQL 8 (database for tasks)
+db → MySQL 8 (database for tasks)  
 
-backend → Spring Boot REST API with JWT authentication
+backend → Spring Boot REST API with JWT authentication  
 
-frontend → React SPA served via Nginx
+frontend → React SPA served via Nginx  
 
 **Example container ports:**
 
-Service Port
-DB 3306
-Backend 8088
-Frontend 3000
+Service Port  
+DB 3306  
+Backend 8088  
+Frontend 3000  
 
 **Project Structure**
 
-/backend → Spring Boot API
-/frontend → React SPA
-/docker-compose.yml
-/wait-for-it.sh
+/backend → Spring Boot API  
+/frontend → React SPA  
+/docker-compose.yml  
+/wait-for-it.sh  
 
 ---
 
